@@ -4,6 +4,8 @@ MineClass is a re-implementation of Minecraft Education Edition's Classroom Mode
 to the point of being completely unusable. MineClass also adds class lists/rosters so that you can save the students in a class, and more easily see who is missing -
 this is super-useful for remote learning. 
 
+Not heavily tested yet! Please report any issues!
+
 ## Installation
 Native apps coming soon!
 
