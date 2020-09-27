@@ -7,7 +7,7 @@ this is super-useful for remote learning.
 Not heavily tested yet! Please report any issues!
 
 ## Installation
-Grab the Windows executable from [releases](https://github.com/askvictor/mineclass/releases), or run from source; you'll need to install python 3.7+, and pyqt5 and pyqtgraph; 
+Grab the Windows executable [here](https://github.com/askvictor/mineclass/releases/latest/download/mineclass.exe), or run from source; you'll need to install python 3.7+, and pyqt5 and pyqtgraph; 
 or just `pip install -r requirements.txt`
 
 I can't provide a Mac version as I haven't got a Mac to create an executable; if anyone wants to contribute, feel free (it's all built in cross-platform Python and Qt, so _should_ work)
