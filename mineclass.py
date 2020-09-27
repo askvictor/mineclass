@@ -121,6 +121,9 @@ class WSServer(QtCore.QObject):
         if self.clientConnection:
             self.clientConnection.deleteLater()
 
+    def send_chat(self, text):
+        return self.send_command(f"say {text}")
+
     def unpause_game(self):
         return self.send_command("globalpause false")
 
@@ -327,6 +330,11 @@ class MCClassroom(QWidget):
         self.chat_box.setReadOnly(True)
         col_right.addWidget(self.chat_box)
 
+        self.chat_input = QLineEdit(self)
+        self.chat_input.setPlaceholderText("Type chat here; enter to send")
+        self.chat_input.returnPressed.connect(self.chat_enter)
+        col_right.addWidget(self.chat_input)
+
         self.user_map = PlotWidget()
         self.map_item = ScatterPlotItem(size=10)
         self.user_map.addItem(self.map_item)
@@ -340,11 +348,16 @@ class MCClassroom(QWidget):
         col_right.addWidget(self.user_map_info)
 
         self.setGeometry(300, 300, 350, 250)
-        self.setWindowTitle('MC Classroom')
+        self.setWindowTitle('MineClass')
 
         self.stack.setCurrentIndex(0)
         self.activate_buttons(False)
         self.show()
+
+    def chat_enter(self):
+        server.send_chat(self.chat_input.text())
+        self.update_chat_box("Teacher", self.chat_input.text(), "chat")
+        self.chat_input.clear()
 
     def map_hover(self, pos):
         act_pos = self.map_item.mapFromScene(pos)
