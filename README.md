@@ -4,7 +4,7 @@ MineClass is a re-implementation of Minecraft Education Edition's Classroom Mode
 to the point of being completely unusable. MineClass also adds class lists/rosters so that you can save the students in a class, and more easily see who is missing -
 this is super-useful for remote learning. 
 
-Not heavily tested yet! Please report any issues!
+Not heavily tested yet! Please report any issues to the [Github tracker](https://github.com/askvictor/mineclass/issues), or [this form](https://docs.google.com/forms/d/e/1FAIpQLSfJzt81GjENdARMeORSi-YV-yX-GoebSz8CVlZbWFcwDQQZGQ/viewform?usp=sf_link) if you don't have a Github account!
 
 ## Installation
 Grab the Windows executable [here](https://github.com/askvictor/mineclass/releases/latest/download/mineclass.exe), or run from source; you'll need to install python 3.7+, and pyqt5 and pyqtgraph; 
