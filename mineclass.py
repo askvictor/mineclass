@@ -253,6 +253,7 @@ class MCClassroom(QWidget):
         # First page: connection instructions
         connect_widget = QWidget()
         connect_layout = QVBoxLayout(connect_widget)
+        connect_layout.addStretch()
         connect_label = QLabel("""First use only: go to Settings->Profile and disable "Require Encrypted Websockets"\n\n
         Open a world in Minecraft, open a terminal (press t), and type:""", self)
         connect_layout.addWidget(connect_label)
@@ -263,6 +264,7 @@ class MCClassroom(QWidget):
         connect_copy_button = QPushButton("Copy to Clipboard", self)
         connect_copy_button.clicked.connect(lambda: QApplication.clipboard().setText(self.connect_command))
         connect_layout.addWidget(connect_copy_button)
+        connect_layout.addStretch()
         self.stack.addWidget(connect_widget)
 
         # Main page
@@ -351,7 +353,7 @@ class MCClassroom(QWidget):
         self.user_map_info.setReadOnly(True)
         col_right.addWidget(self.user_map_info)
 
-        self.setGeometry(300, 300, 350, 250)
+        self.setGeometry(300, 300, 800, 600)
         self.setWindowTitle('MineClass')
 
         self.stack.setCurrentIndex(0)
