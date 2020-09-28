@@ -254,8 +254,7 @@ class MCClassroom(QWidget):
         connect_widget = QWidget()
         connect_layout = QVBoxLayout(connect_widget)
         connect_layout.addStretch()
-        connect_label = QLabel("""First use only: go to Settings->Profile and disable "Require Encrypted Websockets"\n\n
-        Open a world in Minecraft, open a terminal (press t), and type:""", self)
+        connect_label = QLabel("Open a world in Minecraft, open a terminal (press t), and type:", self)
         connect_layout.addWidget(connect_label)
         self.connect_command = f'/connect {server.get_ip()}:{PORT}'
         connect_command_box = QLineEdit(self.connect_command, self)
@@ -264,6 +263,9 @@ class MCClassroom(QWidget):
         connect_copy_button = QPushButton("Copy to Clipboard", self)
         connect_copy_button.clicked.connect(lambda: QApplication.clipboard().setText(self.connect_command))
         connect_layout.addWidget(connect_copy_button)
+        connection_problems_button = QPushButton("Connection Problems?", self)
+        connection_problems_button.clicked.connect(self.show_connection_help)
+        connect_layout.addWidget(connection_problems_button)
         connect_layout.addStretch()
         self.stack.addWidget(connect_widget)
 
@@ -359,6 +361,13 @@ class MCClassroom(QWidget):
         self.stack.setCurrentIndex(0)
         self.activate_buttons(False)
         self.show()
+        if not self.settings.value("HasRunFirstTime", False):
+            self.show_connection_help()
+            self.settings.setValue("HasRunFirstTime", True)
+
+    def show_connection_help(self):
+        QMessageBox.about(self, "Connection Help", '''Before using (or if Minecraft has been newly installed), go to Settings->Profile and disable "Require Encrypted Websockets"\n\n
+Sometimes you'll need to attempt connecting twice (use the up arrow in the Minecraft terminal to access history''')
 
     def save_chat(self):
         options = QFileDialog.Options()
