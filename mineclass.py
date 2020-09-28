@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWebSockets,  QtNetwork
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, QTableWidgetItem, \
-    QComboBox, QInputDialog, QMessageBox, QHeaderView, QPlainTextEdit, QStackedLayout, QLineEdit
+    QComboBox, QInputDialog, QMessageBox, QHeaderView, QPlainTextEdit, QStackedLayout, QLineEdit, QFileDialog
 from PyQt5.QtCore import QSettings, QTimer
 from PyQt5.QtGui import QColor
 from pyqtgraph import PlotWidget, ScatterPlotItem, mkBrush
@@ -335,6 +335,10 @@ class MCClassroom(QWidget):
         self.chat_input.returnPressed.connect(self.chat_enter)
         col_right.addWidget(self.chat_input)
 
+        self.chat_save = QPushButton("Save Chat Logs", self)
+        self.chat_save.clicked.connect(self.save_chat)
+        col_right.addWidget(self.chat_save)
+
         self.user_map = PlotWidget()
         self.map_item = ScatterPlotItem(size=10)
         self.user_map.addItem(self.map_item)
@@ -353,6 +357,13 @@ class MCClassroom(QWidget):
         self.stack.setCurrentIndex(0)
         self.activate_buttons(False)
         self.show()
+
+    def save_chat(self):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save Chat Logs", "", "Text Files (*.txt);;All Files (*)", options=options)
+        if file_name:
+            with open(file_name, "w") as f:
+                f.write(self.chat_box.toPlainText())
 
     def chat_enter(self):
         server.send_chat(self.chat_input.text())
