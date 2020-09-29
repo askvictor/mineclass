@@ -525,10 +525,11 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
     def update_map(self, users):
         data = [{'pos': (int(u['position']['x']), int(u['position']['z'])),
                  'data': u['name'],
-                 'brush': mkBrush("r" if u['name'] == self.server.self_name else "b"),
+                 'brush': mkBrush('g'),  #mkBrush("r" if u['name'] == self.server.self_name else "g"),
+                 'symbol': ("s" if u['name'] == self.server.self_name else "o"),
                 } for u in users.values()]
         self.map_item.setData(data)
-        map(lambda x: "Red" if x['name'] == self.server.self_name else "Blue",  users.values())
+        #map(lambda x: "Red" if x['name'] == self.server.self_name else "Green",  users.values())
 
         # self.map_item.setData(x=[int(u['position']['x']) for u in users.values()],
         #                       y=[int(u['position']['z']) for u in users.values()],
