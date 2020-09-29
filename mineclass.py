@@ -354,6 +354,8 @@ class MCClassroom(QWidget):
         self.user_map.getPlotItem().hideAxis('left')
         self.user_map.getPlotItem().hideAxis('bottom')
         self.map_item.scene().sigMouseMoved.connect(self.map_hover)
+        map_viewbox = self.map_item.getViewBox()
+        map_viewbox.menu = None
         col_right.addWidget(self.user_map)
 
         self.user_map_info = QLineEdit("Hover over a user", self)
