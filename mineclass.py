@@ -180,6 +180,9 @@ class WSServer(QtCore.QObject):
     def teleport_all_to(self, location="@s"):
         return self.send_command(f"tp @a {location}")
 
+    def clear_effects(self, who="@a"):
+        return self.send_command(f"effect {who} clear")
+
     def get_users(self):
         return self.send_command('listd') and self.send_command('querytarget @a')
 
@@ -299,7 +302,12 @@ class MCClassroom(QWidget):
         self.weather_button = self.setup_toggle_button(col_left, self.server.perfect_weather, 'Disable Perfect Weather',
                                                          self.server.imperfect_weather, 'Enable Perfect Weather')
 
-        self.teleport_button = QPushButton('Teleport everyone to you', self)
+        self.clear_potions_button = QPushButton('Clear All Potion Effects', self)
+        self.clear_potions_button.resize(self.clear_potions_button.sizeHint())
+        self.clear_potions_button.clicked.connect(lambda: self.server.clear_effects("@a"))
+        col_left.addWidget(self.clear_potions_button)
+
+        self.teleport_button = QPushButton('Teleport Everyone to You', self)
         self.teleport_button.resize(self.teleport_button.sizeHint())
         self.teleport_button.clicked.connect(lambda: self.server.teleport_all_to("@s"))
         col_left.addWidget(self.teleport_button)
