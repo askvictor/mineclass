@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtWebSockets,  QtNetwork
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, QTableWidgetItem, \
     QComboBox, QInputDialog, QMessageBox, QHeaderView, QPlainTextEdit, QStackedLayout, QLineEdit, QFileDialog
-from PyQt5.QtCore import QSettings, QTimer
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QSettings, QTimer, QUrl
+from PyQt5.QtGui import QColor, QDesktopServices
 from pyqtgraph import PlotWidget, ScatterPlotItem, mkBrush
 import json
 import uuid
@@ -10,6 +10,7 @@ import datetime
 import socket
 
 PORT = 65456
+FEEDBACK_URL = QUrl('https://docs.google.com/forms/d/e/1FAIpQLSfJzt81GjENdARMeORSi-YV-yX-GoebSz8CVlZbWFcwDQQZGQ/viewform')
 
 #TODO
 # Notification when player uses a potion? subscribe to "ItemAcquired" or "ItemUsed" WON'T WORK! Only seems to work for your own items
@@ -316,9 +317,15 @@ class MCClassroom(QWidget):
         self.disconnect_button.resize(self.disconnect_button.sizeHint())
         self.disconnect_button.clicked.connect(self.server.socket_disconnected)
         col_left.addWidget(self.disconnect_button)
-        self.disconnect_button.setFixedWidth(140)
 
         col_left.addStretch()
+
+        self.feedback_button = QPushButton('Feedback/Bug report', self)
+        self.feedback_button.resize(self.feedback_button.sizeHint())
+        self.feedback_button.clicked.connect(lambda: QDesktopServices.openUrl(FEEDBACK_URL))
+        col_left.addWidget(self.feedback_button)
+        self.feedback_button.setFixedWidth(140)
+
 
         # Middle Column: Roll/Register
         self.classes_combo = QComboBox(self)
