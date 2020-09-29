@@ -308,6 +308,9 @@ class MCClassroom(QWidget):
         self.disconnect_button.resize(self.disconnect_button.sizeHint())
         self.disconnect_button.clicked.connect(self.server.socket_disconnected)
         col_left.addWidget(self.disconnect_button)
+        self.disconnect_button.setFixedWidth(140)
+
+        col_left.addStretch()
 
         # Middle Column: Roll/Register
         self.classes_combo = QComboBox(self)
@@ -319,6 +322,7 @@ class MCClassroom(QWidget):
         col_mid.addWidget(self.classes_combo)
 
         self.users_table = QTableWidget(0, 2)
+        self.users_table.setFixedWidth(140)
         self.users_table.verticalHeader().hide()
         header = self.users_table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
