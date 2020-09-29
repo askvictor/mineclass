@@ -317,6 +317,7 @@ class MCClassroom(QWidget):
         class_names = self.settings.value("class_names", [])
         self.classes_combo.addItem("Select class")
         self.classes_combo.addItem("Add a class")
+        self.classes_combo.addItem("Delete a class")
         self.classes_combo.addItems(class_names)
         self.classes_combo.currentTextChanged.connect(self.class_changed)
         col_mid.addWidget(self.classes_combo)
@@ -391,7 +392,7 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
 
         text = ""
         for p in points:
-            text += f'{p.data()}: ({int(p.pos()[0])}, {int(p.pos()[1])})\n'
+            text += f'{p.data()}: ({round(p.pos()[0])}, {round(p.pos()[1])}), '
         self.user_map_info.setText(text)
 
     def time_tick(self):
@@ -454,10 +455,10 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
 
     def class_changed(self):
         selection = self.classes_combo.currentText()
-        if selection != "Select class":
-            self.classes_combo.removeItem(self.classes_combo.findText("Select class"))
+        # if selection != "Select class":
+        #     self.classes_combo.removeItem(self.classes_combo.findText("Select class"))
         if selection == "Add a class":
-            new_class, ok_pressed = QInputDialog().getText(self, 'Class Name', 'Enter the Class Name or Code')
+            new_class, ok_pressed = QInputDialog.getText(self, 'Class Name', 'Enter the Class Name or Code')
             if ok_pressed:
                 classes = self.settings.value('class_names', [])
                 if new_class in classes:
@@ -469,6 +470,21 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
                 self.classes_combo.setCurrentIndex(self.classes_combo.findText(new_class))
         elif selection == "Select class":
             pass
+        elif selection == "Delete a class":
+            current_classes = self.settings.value('class_names', [])
+            if current_classes:
+                class_to_delete, ok_pressed = QInputDialog.getItem(self, 'Delete Class', 'Select which class to delete', current_classes, 0, False)
+                if ok_pressed and class_to_delete:
+                    current_classes.remove(class_to_delete)
+                    self.settings.setValue('class_names', current_classes)
+                    self.settings.remove(f'classes/{class_to_delete}')
+                    self.classes_combo.removeItem(self.classes_combo.findText(class_to_delete))
+                    #TODO delete stdents from table
+                    self.current_class = None
+                    self.current_students = []
+            else:
+                QMessageBox.information(self, "No Classes!", "No Class to delete!")
+            self.classes_combo.setCurrentIndex(0)
         else:
             self.current_class = selection
             self.current_students = self.settings.value(f'classes/{selection}', [])
@@ -488,11 +504,13 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
             current_table_user = self.users_table.item(i, 0).text()
             if current_table_user in users:
                 tick = QTableWidgetItem("✓")
+                tick.setTextAlignment(QtCore.Qt.AlignCenter)
                 tick.setBackground(QColor(QtCore.Qt.green))
                 self.users_table.setItem(i, 1, tick)
                 users.remove(current_table_user)
             else:
                 cross = QTableWidgetItem("✗")
+                cross.setTextAlignment(QtCore.Qt.AlignCenter)
                 cross.setBackground(QColor(QtCore.Qt.red))
                 self.users_table.setItem(i, 1, cross)
 
