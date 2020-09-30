@@ -1,16 +1,28 @@
 from PyQt5 import QtCore, QtWebSockets,  QtNetwork
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, QTableWidgetItem, \
     QComboBox, QInputDialog, QMessageBox, QHeaderView, QPlainTextEdit, QStackedLayout, QLineEdit, QFileDialog
-from PyQt5.QtCore import QSettings, QTimer, QUrl
+from PyQt5.QtCore import QSettings, QTimer, QUrl, Qt
 from PyQt5.QtGui import QColor, QDesktopServices
 from pyqtgraph import PlotWidget, ScatterPlotItem, mkBrush
 import json
 import uuid
 import datetime
 import socket
+import urllib.request
+from packaging import version
 
+VERSION = "0.2.2"
+GITHUB_API_URL = "https://api.github.com/repos/askvictor/mineclass/releases/latest"
+GITHUB_DOWNLOAD_URL = "https://github.com/askvictor/mineclass/releases/latest"
 PORT = 65456
 FEEDBACK_URL = QUrl('https://docs.google.com/forms/d/e/1FAIpQLSfJzt81GjENdARMeORSi-YV-yX-GoebSz8CVlZbWFcwDQQZGQ/viewform')
+
+def is_newer_version_available(current=VERSION):
+    try:
+        gh_latest = json.loads(urllib.request.urlopen(GITHUB_API_URL).read())['tag_name']
+        return version.parse(gh_latest) > version.parse(current)
+    except:
+        return None
 
 #TODO
 # Notification when player uses a potion? subscribe to "ItemAcquired" or "ItemUsed" WON'T WORK! Only seems to work for your own items
@@ -320,6 +332,10 @@ class MCClassroom(QWidget):
 
         col_left.addStretch()
 
+        self.version_label = QLabel(f'Version {VERSION}', self)
+        self.version_label.setAlignment(Qt.AlignCenter)
+        col_left.addWidget(self.version_label)
+
         self.feedback_button = QPushButton('Feedback/Bug report', self)
         self.feedback_button.resize(self.feedback_button.sizeHint())
         self.feedback_button.clicked.connect(lambda: QDesktopServices.openUrl(FEEDBACK_URL))
@@ -383,6 +399,10 @@ class MCClassroom(QWidget):
         self.stack.setCurrentIndex(0)
         self.activate_buttons(False)
         self.show()
+
+        if is_newer_version_available():
+            QMessageBox.about(self, "Newer Version Available", f'A newer version of this program is available <a href="{GITHUB_DOWNLOAD_URL}">here</a>.')
+
         if not self.settings.value("HasRunFirstTime", False):
             self.show_connection_help()
             self.settings.setValue("HasRunFirstTime", True)
