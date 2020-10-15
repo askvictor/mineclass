@@ -10,7 +10,7 @@ Not heavily tested yet! Please report any issues to the [Github tracker](https:/
 Grab the Windows executable [here](https://github.com/askvictor/mineclass/releases/latest/download/mineclass.exe), or run from source; you'll need to install python 3.7+, and pyqt5 and pyqtgraph; 
 or just `pip install -r requirements.txt`
 
-I can't provide a Mac version as I haven't got a Mac to create an executable; if anyone wants to contribute, feel free (it's all built in cross-platform Python and Qt, so _should_ work)
+A MacOS version is now available [here](https://github.com/askvictor/mineclass/releases/latest/download/mineclass_macos.zip) but it has not been tested and may or may not run (please let me know!) I don't have a Mac to test, and had to invoke some black magic (actually, [Darling](https://www.darlinghq.org/)) to create the Mac app package.
 
 ## Usage
 - Start MineClass
