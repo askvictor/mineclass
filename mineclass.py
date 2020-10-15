@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWebSockets,  QtNetwork
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, QTableWidgetItem, \
-    QComboBox, QInputDialog, QMessageBox, QHeaderView, QPlainTextEdit, QStackedLayout, QLineEdit, QFileDialog
+    QComboBox, QInputDialog, QMessageBox, QHeaderView, QPlainTextEdit, QStackedLayout, QLineEdit, QFileDialog, QSizePolicy
 from PyQt5.QtCore import QSettings, QTimer, QUrl, Qt
 from PyQt5.QtGui import QColor, QDesktopServices
 from pyqtgraph import PlotWidget, ScatterPlotItem, mkBrush
@@ -11,7 +11,7 @@ import socket
 import urllib.request
 from packaging import version
 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 GITHUB_API_URL = "https://api.github.com/repos/askvictor/mineclass/releases/latest"
 GITHUB_DOWNLOAD_URL = "https://github.com/askvictor/mineclass/releases/latest"
 PORT = 65456
@@ -300,33 +300,34 @@ class MCClassroom(QWidget):
 
         self.pause_button = self.setup_toggle_button(col_left, self.server.pause_game, 'Un-pause',
                                                      self.server.unpause_game, 'Pause')
+        button_size = self.pause_button.size()
         self.disable_chat_button = self.setup_toggle_button(col_left, self.server.disable_chat, 'Enable Chat',
-                                                self.server.enable_chat, 'Disable Chat')
+                                                self.server.enable_chat, 'Disable Chat', button_size)
         self.allow_mobs_button = self.setup_toggle_button(col_left, self.server.disallow_mobs, 'Allow Mobs',
-                                                self.server.allow_mobs, 'Disable Mobs')
+                                                self.server.allow_mobs, 'Disable Mobs', button_size)
         self.allow_destructiveobjects_button = self.setup_toggle_button(col_left, self.server.disallow_destructiveobjects, 'Enable Destructive Items',
-                                                self.server.allow_destructiveobjects, 'Disable Destructive Items')
+                                                self.server.allow_destructiveobjects, 'Disable Destructive Items', button_size)
         self.allow_player_damage_button = self.setup_toggle_button(col_left, self.server.disallow_player_damage, 'Enable Player Damage',
-                                                self.server.allow_player_damage, 'Disable Player Damage')
+                                                self.server.allow_player_damage, 'Disable Player Damage', button_size)
         self.allow_pvp_button = self.setup_toggle_button(col_left, self.server.disallow_pvp, 'Allow Player Fighting',
-                                                self.server.allow_pvp, 'Disable Player Fighting')
+                                                self.server.allow_pvp, 'Disable Player Fighting', button_size)
         self.immutable_button = self.setup_toggle_button(col_left, self.server.immutable_world, 'Enable World Modifications',
-                                                         self.server.mutable_world, 'Disable World Modifications')
+                                                         self.server.mutable_world, 'Disable World Modifications', button_size)
         self.weather_button = self.setup_toggle_button(col_left, self.server.perfect_weather, 'Disable Perfect Weather',
-                                                         self.server.imperfect_weather, 'Enable Perfect Weather')
+                                                         self.server.imperfect_weather, 'Enable Perfect Weather', button_size)
 
         self.clear_potions_button = QPushButton('Clear All Potion Effects', self)
-        self.clear_potions_button.resize(self.clear_potions_button.sizeHint())
+        self.clear_potions_button.resize(button_size)
         self.clear_potions_button.clicked.connect(lambda: self.server.clear_effects("@a"))
         col_left.addWidget(self.clear_potions_button)
 
         self.teleport_button = QPushButton('Teleport Everyone to You', self)
-        self.teleport_button.resize(self.teleport_button.sizeHint())
+        self.teleport_button.resize(button_size)
         self.teleport_button.clicked.connect(lambda: self.server.teleport_all_to("@s"))
         col_left.addWidget(self.teleport_button)
 
         self.disconnect_button = QPushButton('Disconnect', self)
-        self.disconnect_button.resize(self.disconnect_button.sizeHint())
+        self.disconnect_button.resize(button_size)
         self.disconnect_button.clicked.connect(self.server.socket_disconnected)
         col_left.addWidget(self.disconnect_button)
 
@@ -337,11 +338,9 @@ class MCClassroom(QWidget):
         col_left.addWidget(self.version_label)
 
         self.feedback_button = QPushButton('Feedback/Bug report', self)
-        self.feedback_button.resize(self.feedback_button.sizeHint())
+        self.feedback_button.resize(button_size)
         self.feedback_button.clicked.connect(lambda: QDesktopServices.openUrl(FEEDBACK_URL))
         col_left.addWidget(self.feedback_button)
-        self.feedback_button.setFixedWidth(140)
-
 
         # Middle Column: Roll/Register
         self.classes_combo = QComboBox(self)
@@ -354,7 +353,8 @@ class MCClassroom(QWidget):
         col_mid.addWidget(self.classes_combo)
 
         self.users_table = QTableWidget(0, 2)
-        self.users_table.setFixedWidth(140)
+        self.users_table.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding))
+        #self.users_table.setFixedWidth(140)  # doesn't work well on HiDPI displays
         self.users_table.verticalHeader().hide()
         header = self.users_table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
@@ -453,9 +453,9 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
     def activate_buttons(self, activate):
         self.pause_button.setDisabled(not activate)
 
-    def setup_toggle_button(self, parent, checked_action, checked_text, unchecked_action, unchecked_text):
+    def setup_toggle_button(self, parent, checked_action, checked_text, unchecked_action, unchecked_text, size=None):
         button = QPushButton(unchecked_text, self)
-        button.resize(button.sizeHint())
+        button.resize(button.sizeHint() if size is None else size)
         button.setCheckable(True)
         parent.addWidget(button)
         def toggle_button_clicked(checked_status):
@@ -558,6 +558,7 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
 
         self.users_table.sortItems(0, QtCore.Qt.AscendingOrder)
         self.users_table.sortItems(1, QtCore.Qt.DescendingOrder)
+        self.users_table.resize(self.users_table.sizeHint())
 
     def update_map(self, users):
         data = [{'pos': (int(u['position']['x']), int(u['position']['z'])),
@@ -576,6 +577,7 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
+    app.setAttribute(Qt.AA_EnableHighDpiScaling)
     settings = QSettings("PositiveState", "MC Classroom")
     serverObject = QtWebSockets.QWebSocketServer('My Socket', QtWebSockets.QWebSocketServer.NonSecureMode)
     server = WSServer(serverObject, settings, address='0.0.0.0')
