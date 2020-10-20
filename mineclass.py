@@ -64,6 +64,9 @@ class WSServer(QtCore.QObject):
         self.users = {}
         self.self_name = None
 
+        self.potions_disable_timer = QTimer()
+        self.potions_disable_timer.timeout.connect(self.clear_effects)
+
         print(self.server.isListening())
 
     def on_new_connection(self):
@@ -193,6 +196,13 @@ class WSServer(QtCore.QObject):
     def teleport_all_to(self, location="@s"):
         return self.send_command(f"tp @a {location}")
 
+    def disable_potions(self):
+        self.clear_effects()
+        self.potions_disable_timer.start(5000)
+
+    def enable_potions(self):
+        self.potions_disable_timer.stop()
+
     def clear_effects(self, who="@a"):
         return self.send_command(f"effect {who} clear")
 
@@ -315,11 +325,13 @@ class MCClassroom(QWidget):
                                                          self.server.mutable_world, 'Disable World Modifications', button_size)
         self.weather_button = self.setup_toggle_button(col_left, self.server.perfect_weather, 'Disable Perfect Weather',
                                                          self.server.imperfect_weather, 'Enable Perfect Weather', button_size)
+        self.disable_potions_button = self.setup_toggle_button(col_left, self.server.disable_potions, 'Enable Potions',
+                                                       self.server.enable_potions, 'Disable Potions', button_size)
 
-        self.clear_potions_button = QPushButton('Clear All Potion Effects', self)
-        self.clear_potions_button.resize(button_size)
-        self.clear_potions_button.clicked.connect(lambda: self.server.clear_effects("@a"))
-        col_left.addWidget(self.clear_potions_button)
+        # self.clear_potions_button = QPushButton('Clear All Potion Effects', self)
+        # self.clear_potions_button.resize(button_size)
+        # self.clear_potions_button.clicked.connect(lambda: self.server.clear_effects("@a"))
+        # col_left.addWidget(self.clear_potions_button)
 
         self.teleport_button = QPushButton('Teleport Everyone to You', self)
         self.teleport_button.resize(button_size)
