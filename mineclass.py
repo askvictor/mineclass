@@ -11,7 +11,7 @@ import socket
 import urllib.request
 from packaging import version
 
-VERSION = "0.2.4"
+VERSION = "0.2.5"
 GITHUB_API_URL = "https://api.github.com/repos/askvictor/mineclass/releases/latest"
 GITHUB_DOWNLOAD_URL = "https://github.com/askvictor/mineclass/releases/latest"
 PORT = 65456
@@ -365,8 +365,9 @@ class MCClassroom(QWidget):
         col_mid.addWidget(self.classes_combo)
 
         self.users_table = QTableWidget(0, 2)
+        self.users_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.users_table.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding))
-        #self.users_table.setFixedWidth(140)  # doesn't work well on HiDPI displays
+        self.users_table.setFixedWidth(140)
         self.users_table.verticalHeader().hide()
         header = self.users_table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
@@ -570,7 +571,7 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
 
         self.users_table.sortItems(0, QtCore.Qt.AscendingOrder)
         self.users_table.sortItems(1, QtCore.Qt.DescendingOrder)
-        self.users_table.resize(self.users_table.sizeHint())
+        self.users_table.resizeRowsToContents()
 
     def update_map(self, users):
         data = [{'pos': (int(u['position']['x']), int(u['position']['z'])),
@@ -588,8 +589,8 @@ Sometimes you'll need to attempt connecting twice (use the up arrow in the Minec
 
 if __name__ == '__main__':
     import sys
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
-    app.setAttribute(Qt.AA_EnableHighDpiScaling)
     settings = QSettings("PositiveState", "MC Classroom")
     serverObject = QtWebSockets.QWebSocketServer('My Socket', QtWebSockets.QWebSocketServer.NonSecureMode)
     server = WSServer(serverObject, settings, address='0.0.0.0')
