@@ -11,7 +11,7 @@ import socket
 import urllib.request
 from packaging import version
 
-VERSION = "0.2.3"
+VERSION = "0.2.4"
 GITHUB_API_URL = "https://api.github.com/repos/askvictor/mineclass/releases/latest"
 GITHUB_DOWNLOAD_URL = "https://github.com/askvictor/mineclass/releases/latest"
 PORT = 65456
