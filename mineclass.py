@@ -198,7 +198,7 @@ class WSServer(QtCore.QObject):
 
     def disable_potions(self):
         self.clear_effects()
-        self.potions_disable_timer.start(5000)
+        self.potions_disable_timer.start(3000)
 
     def enable_potions(self):
         self.potions_disable_timer.stop()
